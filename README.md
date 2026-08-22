@@ -1,67 +1,79 @@
 # MsgDel
 
-Vencord plugin that deletes **your** messages in a channel or across a whole server.
+A [Vencord](https://vencord.dev) user plugin that deletes **your own** messages in a channel or across an entire server.
 
-Плагин для [Vencord](https://vencord.dev): удаляет **ваши** сообщения в выбранном чате или на всём сервере.
+MsgDel never deletes messages sent by other users. Discord only allows a user to delete their own messages unless they have moderator permissions; this plugin does not use moderator delete.
 
-Чужие сообщения плагин не трогает. Discord позволяет удалять только свои сообщения (или чужие, если вы модератор — этот плагин так не делает).
+## Features
 
-## Как пользоваться
+- Delete your messages in a channel, DM, group DM, or thread
+- Delete your messages across a whole guild
+- Confirmation prompt before a run starts
+- Progress bar with a stop button
+- Context menu, plugin settings, toolbox actions, and `/msgdel`
+- Automatic fallback to channel history if Discord search is unavailable
+- Configurable delays to stay within Discord rate limits
 
-После включения плагина:
+## Requirements
 
-1. **ПКМ по каналу / ЛС / группе** → `Удалить мои сообщения`
-2. **ПКМ по серверу** → `Удалить мои сообщения на сервере`
-3. В настройках плагина кнопки **Текущий чат** / **Текущий сервер**
-4. Команда `/msgdel` (этот чат), `/msgdel scope:server` (весь сервер), `/msgdel scope:stop`
+MsgDel is a **user plugin**. It requires a [Vencord install built from source](https://docs.vencord.dev/installing/). The standard Vencord installer does not load user plugins.
 
-Сверху появится полоска прогресса и кнопка **Стоп**.
+Equicord is supported through the same `src/userplugins` layout.
 
-Перед стартом плагин спросит подтверждение. Удаление необратимо.
+## Installation
 
-## Установка
-
-Нужна сборка Vencord **из исходников**. Обычный установщик user-плагины не подхватывает.
-
-1. Поставьте Vencord from source: https://docs.vencord.dev/installing/
-2. В папке Vencord создайте `src/userplugins`, если её ещё нет
-3. Клонируйте репозиторий **в папку с именем в camelCase**:
+1. Install Vencord from source: https://docs.vencord.dev/installing/
+2. Create `src/userplugins` in your Vencord directory if it does not exist
+3. Clone this repository into a camelCase folder:
 
 ```bash
 git clone https://github.com/Who1sme6/MsgDel.git src/userplugins/msgDel
 ```
 
-Либо скопируйте `index.tsx` в `src/userplugins/msgDel/index.tsx`.
+Alternatively, copy `index.tsx` to `src/userplugins/msgDel/index.tsx`.
 
-4. В папке Vencord выполните:
+4. From the Vencord root directory, rebuild:
 
 ```bash
 pnpm build
 ```
 
-5. Полностью перезапустите Discord
-6. Настройки → Vencord → Plugins → включите **MsgDel**
+5. Fully restart Discord
+6. Open **Settings → Vencord → Plugins** and enable **MsgDel**
 
-То же самое работает в Equicord: файл кладётся в `src/userplugins/msgDel/index.tsx`.
+## Usage
 
-## Настройки
+After the plugin is enabled:
 
-| Настройка | Зачем |
+| Action | How |
 | --- | --- |
-| Подтверждение | Спросить ещё раз перед удалением |
-| Пауза между удалениями | Чем больше, тем безопаснее для аккаунта. По умолчанию 1200 мс, минимум 1000 мс |
-| Пауза между поиском | Discord медленно отдаёт результаты поиска. По умолчанию 2500 мс |
+| Current channel / DM / group | Right-click the channel → **Delete my messages** |
+| Entire server | Right-click the server → **Delete my messages on this server** |
+| Settings | Plugin settings → **Current chat** / **Current server** |
+| Command | `/msgdel`, `/msgdel scope:server`, `/msgdel scope:stop` |
 
-Не ставьте паузу удаления ниже ~1000 мс: Discord может временно ограничить аккаунт.
+A progress bar appears at the top of the client, including a **Stop** button.
 
-## Важно
+If confirmation is enabled, MsgDel asks before starting. Deleted messages cannot be recovered.
 
-- Удаляются только сообщения **вашего** аккаунта
-- Системные сообщения (вход на сервер, бусты, звонки и т.п.) пропускаются
-- Поиск Discord иногда запаздывает: плагин несколько раз перепроверяет, что сообщения закончились
-- Если поиск недоступен, плагин переключается на обход истории канала
-- Массовые запросы от пользовательского клиента формально против правил Discord. Используйте спокойные паузы и не гоняйте это круглосуточно
+## Settings
 
-## Лицензия
+| Setting | Description |
+| --- | --- |
+| Confirm before delete | Show a confirmation dialog before a run |
+| Delete delay | Pause between deletions. Default: `1200` ms. Minimum: `1000` ms |
+| Search delay | Pause between Discord search requests. Default: `2500` ms |
 
-[GPL-3.0-or-later](LICENSE) — как у Vencord.
+A delete delay below `1000` ms increases the chance of Discord rate limits or a temporary restriction.
+
+## Notes
+
+- Only messages authored by the signed-in account are deleted
+- System messages (joins, boosts, calls, and similar) are skipped
+- Discord search can lag; MsgDel re-checks several times before treating a run as finished
+- If search is unavailable, MsgDel falls back to scanning channel history
+- Bulk requests from a user client are against Discord’s Terms of Service. Use conservative delays and do not run this continuously
+
+## License
+
+This project is licensed under [GPL-3.0-or-later](LICENSE), the same license as Vencord.
