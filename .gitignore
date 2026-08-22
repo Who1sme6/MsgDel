@@ -1,0 +1,17 @@
+.DS_Store
+Thumbs.db
+desktop.ini
+
+node_modules/
+dist/
+build/
+*.log
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
+
+.idea/
+.vscode/
+*.local
